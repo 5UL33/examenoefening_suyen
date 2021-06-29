@@ -1,10 +1,12 @@
+DROP DATABASE IF EXISTS examenoefening_suyen;
 CREATE DATABASE examenoefening_suyen;
+USE examenoefening_suyen;
 
 CREATE TABLE Gebruiker (
-	id INT NOT NULL AUTO_INCREMENT,
+	id INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	voornaam VARCHAR(255) NOT NULL,
 	achternaam VARCHAR(255) NOT NULL,
-	telefoonnummer INT,
+	telefoonnummer VARCHAR(12),
 	email VARCHAR(255) NOT NULL,
 	wachtwoord VARCHAR(60) NOT NULL,
 	is_admin BOOLEAN,
@@ -21,5 +23,51 @@ CREATE TABLE Groep (
 );
 
 CREATE TABLE Groepsleden (
+	groep_id INT NOT NULL AUTO_INCREMENT,
+	lid_id INT UNSIGNED NOT NULL,
+	is_mod BOOLEAN,
+
+	PRIMARY KEY(groep_id),
+	FOREIGN KEY(lid_id) REFERENCES Gebruiker(id) ON DELETE CASCADE
 
 );
+
+CREATE TABLE Vrienden (
+	vriend_1 INT UNSIGNED NOT NULL,
+ 	vriend_2 INT UNSIGNED NOT NULL,
+ 	is_accepted BOOLEAN,
+
+	FOREIGN KEY (vriend_1) REFERENCES Gebruiker(id) ON DELETE CASCADE,
+	FOREIGN KEY (vriend_2) REFERENCES Gebruiker(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Post (
+	id INT NOT NULL AUTO_INCREMENT,
+	inhoud VARCHAR(255) NOT NULL,
+	poster_id INT UNSIGNED NOT NULL,
+	groep_id INT NULL,
+
+	PRIMARY KEY(id),
+	FOREIGN KEY(poster_id) REFERENCES Gebruiker(id) ON DELETE CASCADE,
+	FOREIGN KEY(groep_id) REFERENCES Groep(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Comment (
+	id INT NOT NULL AUTO_INCREMENT,
+	inhoud VARCHAR(255) NOT NULL,
+	commenter_id INT UNSIGNED NOT NULL,
+	post_id INT NOT NULL,
+
+	PRIMARY KEY(id),
+	FOREIGN KEY(commenter_id) REFERENCES Gebruiker(id),
+	FOREIGN KEY(post_id) REFERENCES Post(id)
+);
+
+CREATE TABLE Likes (
+	iked_id INT UNSIGNED NOT NULL,
+ 	liked_type VARCHAR(255) NOT NULL,
+ 	liker_id INT UNSIGNED NOT NULL,
+
+	FOREIGN KEY (liker_id) REFERENCES Gebruiker(id)
+);
+
