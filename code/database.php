@@ -14,13 +14,22 @@ class Database {
 		$hashed_password = password_hash('gebruiker', PASSWORD_DEFAULT);
 		$sql = 'INSERT INTO Gebruiker VALUES (NULL, :voornaam, :achternaam, :telefoonnummer, :email, :wachtwoord, :is_admin)';	
 		$statement = $this->dbh->prepare($sql);
-		$statement->each(array)xecute([
+		$statement->execute([
 			'voornaam' => 'Johnny',
-			'username' => 'Test',
+			'achternaam' => 'Test',
 			'telefoonnummer' => '0612345678',
 			'email' => 'test@mail.com',
-			'wachtwoord' => $hashed_password
-			'is_admin' => 2	]);
+			'wachtwoord' => $hashed_password,
+			'is_admin' => 0	]);
+	}
+
+	public function profiel_pagina(): array {
+		$sql = 'SELECT voornaam, achternaam, email, telefoonnummer FROM Gebruiker';
+		$s = $this->dbh->prepare($sql);
+		$s->execute();
+
+		return $s->fetchAll(PDO::FETCH_ASSOC);
+
 	}
 
 	public function login(string $email, string $wachtwoord): void
@@ -46,14 +55,11 @@ class Database {
             $_SESSION['logged_in_as'] = $wachtwoord;
             $_SESSION['is_admin'] = $results['is_admin'] === '1';
 
-            //header('Location: users_overview.php');
+            header('Location: ../views/profiel_pagina.php');
         }
         else
             // Je kunt hier ook exit('...') gebruiken als je een aparte pagina teveel moeite vindt
-            header('Location: examenvoorvereidingf/Views/login_incorrect.php');
-    }
-
+            exit('login incorrect');
+    }}
 
 	
-
-}

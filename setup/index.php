@@ -2,4 +2,4 @@
 include '../../database.php';
 
 $db = new Database();
-$db->create_genruiker();
+// $db->create_gebruiker();
